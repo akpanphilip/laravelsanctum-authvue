@@ -1,87 +1,132 @@
 <template>
-    <div class="container h-100">
-        <div class="row h-100 align-items-center">
-            <div class="col-12 col-md-6 offset-md-3">
-                <div class="card shadow sm">
-                    <div class="card-body">
-                        <h1 class="text-center">Register</h1>
-                        <hr/>
-                        <form action="javascript:void(0)" @submit="register" class="row" method="post">
-                            <div class="col-12" v-if="Object.keys(validationErrors).length > 0">
-                                <div class="alert alert-danger">
-                                    <ul class="mb-0">
-                                        <li v-for="(value, key) in validationErrors" :key="key">{{ value[0] }}</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="form-group col-12">
-                                <label for="name" class="font-weight-bold">Name</label>
-                                <input type="text" name="name" v-model="user.name" id="name" placeholder="Enter name" class="form-control">
-                            </div>
-                            <div class="form-group col-12 my-2">
-                                <label for="email" class="font-weight-bold">Email</label>
-                                <input type="text" name="email" v-model="user.email" id="email" placeholder="Enter Email" class="form-control">
-                            </div>
-                            <div class="form-group col-12">
-                                <label for="password" class="font-weight-bold">Password</label>
-                                <input type="password" name="password" v-model="user.password" id="password" placeholder="Enter Password" class="form-control">
-                            </div>
-                            <div class="form-group col-12 my-2">
-                                <label for="password_confirmation" class="font-weight-bold">Confirm Password</label>
-                                <input type="password_confirmation" name="password_confirmation" v-model="user.password_confirmation" id="password_confirmation" placeholder="Enter Password" class="form-control">
-                            </div>
-                            <div class="col-12 mb-2">
-                                <button type="submit" :disabled="processing" class="btn btn-primary btn-block">
-                                    {{ processing ? "Please wait" : "Register" }}
-                                </button>
-                            </div>
-                            <div class="col-12 text-center">
-                                <label>Already have an account? <router-link :to="{name:'login'}">Login Now!</router-link></label>
-                            </div>
-                        </form>
+    <v-container>
+        <v-row class="justify-center" dense>
+            <v-col cols="6">
+                <v-form ref="form">
+                    <div class="text-center mb-2">
+                        <h3 class="auth-header">Get Onboarded!</h3>
+                        <div class="auth-subheader">
+                            Join other passionate learners explore new things
+                        </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                    <!-- General error message -->
+                    <v-alert v-if="generalError" type="error" dismissible>
+                        {{ generalError }}
+                    </v-alert>
+                    <v-text-field
+                        variant="outlined"
+                        v-model="form.name"
+                        label="Name*"
+                        :error-messages="errors.name"
+                        required
+                    ></v-text-field>
+                    <v-text-field
+                        variant="outlined"
+                        v-model="form.email"
+                        label="Email*"
+                        :error-messages="errors.email"
+                        required
+                    ></v-text-field>
+                    <v-text-field
+                        v-model="form.password"
+                        :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+                        :type="visible ? 'text' : 'password'"
+                        placeholder="Enter your password"
+                        prepend-inner-icon="mdi-lock-outline"
+                        variant="outlined"
+                        @click:append-inner="visible = !visible"
+                        :error-messages="errors.password"
+                    ></v-text-field>
+                    <v-text-field
+                        v-model="form.password_confirmation"
+                        :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+                        :type="visible ? 'text' : 'password'"
+                        placeholder="Confirm Password"
+                        prepend-inner-icon="mdi-lock-outline"
+                        variant="outlined"
+                        @click:append-inner="visible = !visible"
+                        :error-messages="errors.password_confirmation"
+                    ></v-text-field>
+
+                    <v-row dense>
+                        <v-col cols="12" md="12" sm="12">
+                            <v-btn
+                                @click="register"
+                                rounded="lg"
+                                size="x-large"
+                                class="bg-primary"
+                                block
+                            >
+                                {{ processing ? "Please wait" : "Register" }}
+                            </v-btn>
+                        </v-col>
+                    </v-row>
+                    <div class="text-center mt-2">
+                        <p>
+                            <span>Already have an account?</span> &nbsp;
+                            <router-link :to="{ name: 'login' }"
+                                >Log in
+                            </router-link>
+                        </p>
+                    </div>
+                </v-form>
+            </v-col>
+        </v-row>
+    </v-container>
 </template>
+
 <script>
-import { mapActions } from 'vuex'
+import { mapActions } from "vuex";
 export default {
-    name:'register',
-    data(){
+    name: "register",
+    data() {
         return {
-            user:{
-                name:"",
-                email:"",
-                password:"",
-                password_confirmation:""
-            },
-            validationErrors:{},
-            processing:false
-        }
+            errors: {},
+            form: {},
+            processing: false,
+            generalError: "",
+            visible: false,
+        };
     },
-    methods:{
+    methods: {
         ...mapActions({
-            signIn:'auth/login'
+            signIn: "auth/login",
         }),
-        async register(){
-            this.processing = true
-            await axios.get('/sanctum/csrf-cookie')
-            await axios.post('/register',this.user).then(response=>{
-                this.validationErrors = {}
-                this.signIn()
-            }).catch(({response})=>{
-                if(response.status===422){
-                    this.validationErrors = response.data.errors
-                }else{
-                    this.validationErrors = {}
-                    alert(response.data.message)
+        async register() {
+            this.processing = true;
+            this.clearErrors();
+            try {
+                await axios.get("/sanctum/csrf-cookie");
+                const { data } = await axios
+                    .post("/register", this.form)
+                    .then((response) => {
+                        this.validationErrors = {};
+                        this.signIn();
+                        console.log(data);
+                    });
+            } catch (error) {
+                const { data } = error.response;
+                if (data.errors) {
+                    this.setErrors(data.errors);
+                } else {
+                    this.generalError = data.message || "An error occurred.";
                 }
-            }).finally(()=>{
-                this.processing = false
-            })
-        }
-    }
-}
+            } finally {
+                this.processing = false;
+            }
+        },
+        clearErrors() {
+            this.errors = {
+                email: [],
+                password: [],
+            };
+            this.generalError = "";
+        },
+        setErrors(errors) {
+            Object.keys(errors).forEach((field) => {
+                this.errors[field] = errors[field];
+            });
+        },
+    },
+};
 </script>

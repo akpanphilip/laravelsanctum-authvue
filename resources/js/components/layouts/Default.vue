@@ -1,56 +1,106 @@
 <template>
-    <div>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="https://techvblogs.com/blog/spa-authentication-laravel-9-sanctum-vue3-vite" target="_blank">TechvBlogs</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                    <ul class="navbar-nav me-auto">
-                        <li class="nav-item">
-                            <router-link :to="{name:'dashboard'}" class="nav-link">Home <span class="sr-only">(current)</span></router-link>
-                        </li>
-                    </ul>
-                    <div class="d-flex">
-                        <ul class="navbar-nav">
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    {{ user.name }}
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-                                    <a class="dropdown-item" href="javascript:void(0)" @click="logout">Logout</a>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </nav>
-        <main class="mt-3">
-            <router-view></router-view>
-        </main>
-    </div>
+    <v-card>
+        <v-row>
+            <v-col cols="9">
+                <router-view></router-view>
+            </v-col>
+            <v-col cols="3">
+                <v-layout>
+                    <v-navigation-drawer location="right" permanent>
+                        <template v-slot:prepend>
+                            <v-list-item
+                                lines="two"
+                                prepend-avatar="https://randomuser.me/api/portraits/women/81.jpg"
+                            >
+                                {{ user.name }} <br />
+                                <small>{{ user.email }}</small>
+                            </v-list-item>
+                        </template>
+
+                        <v-divider></v-divider>
+
+                        <v-list density="compact" nav>
+                            <v-list-item
+                                :class="{
+                                    'v-list-item--active':
+                                        isActive('dashboard'),
+                                }"
+                                prepend-icon="mdi-home-city"
+                            >
+                                <router-link :to="{ name: 'dashboard' }">
+                                    Dashboard
+                                </router-link>
+                            </v-list-item>
+                            <v-list-item
+                                prepend-icon="mdi-account"
+                                title="My Account"
+                                value="account"
+                            ></v-list-item>
+                            <v-list-item
+                                prepend-icon="mdi-account-group-outline"
+                                title="Users"
+                                value="users"
+                            ></v-list-item>
+                            <v-list-item
+                                :class="{
+                                    'v-list-item--active': isActive('allusers'),
+                                }"
+                                prepend-icon="mdi-account-group-outline"
+                            >
+                                <router-link :to="{ name: 'allusers' }">
+                                    All Users
+                                </router-link>
+                            </v-list-item>
+                            <v-list-item
+                                @click="logout"
+                                prepend-icon="mdi-logout"
+                                title="Logout"
+                                value="logout"
+                            ></v-list-item>
+                        </v-list>
+                    </v-navigation-drawer>
+                    <v-main style="height: 250px"></v-main>
+                </v-layout>
+            </v-col>
+        </v-row>
+    </v-card>
 </template>
 <script>
-import {mapActions} from 'vuex'
+import { mapActions } from "vuex";
 export default {
-    name:"default-layout",
-    data(){
+    name: "default-layout",
+    data() {
         return {
-            user:this.$store.state.auth.user
-        }
+            user: this.$store.state.auth.user,
+        };
     },
-    methods:{
+    methods: {
         ...mapActions({
-            signOut:"auth/logout"
+            signOut: "auth/logout",
         }),
-        async logout(){
-            await axios.post('/logout').then(({data})=>{
-                this.signOut()
-                this.$router.push({name:"login"})
-            })
-        }
-    }
-}
+        isActive(routeName) {
+            return this.$route.name === routeName;
+        },
+        async logout() {
+            await axios.post("/logout").then(({ data }) => {
+                this.signOut();
+                this.$router.push({ name: "login" });
+            });
+        },
+    },
+};
 </script>
+
+<style>
+.v-list-item--active {
+    background-color: #1976d2;
+    color: white !important;
+}
+.v-list-item--active a{
+    color: white !important;
+
+}
+.router-link-active {
+     
+}
+</style>

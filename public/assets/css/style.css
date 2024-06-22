@@ -1,0 +1,14 @@
+.formBox {
+    margin: 50px 0 !important;
+}
+input:focus {
+    background: #fff !important;
+}
+.v-messages__message {
+    line-height: 25px;
+    margin-left: -15px;
+    margin-bottom: 15px;
+}
+a {
+    text-decoration: none;
+}

@@ -6,20 +6,17 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
 
-Route::get('/', [PageController::class, 'index']);
+// Route::get('/', [PageController::class, 'index']);
 
 Route::get('/api/users', [PageController::class, 'users']);
 
-Route::middleware('auth:sanctum')->get('/api/user', function (Request $request) {
-    
-    // $email = $request->user()->email;
-    // $name = $request->user()->name;
-    // $user = [$email, $name];
-    
-    // return $user;
-    // dd($request->user());
-    return $request->user();
+Route::post('/api/user/create', [PageController::class, 'create']);
 
+Route::get('/api/user/{id}', [PageController::class, 'show']);
+
+
+Route::middleware('auth:sanctum')->get('/api/user', function (Request $request) {
+    return $request->user();
 });
 
 Route::get('/{any?}', function () {

@@ -1,28 +1,23 @@
 <template>
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <div class="card shadow-sm">
-                    <div class="card-header">
-                        <h3>Dashboard</h3>
-                    </div>
-                    <div class="card-body">
-                        <p class="mb-0">
-                            You are logged in as <b>{{ user.name }}</b>
-                        </p>
-                        <div v-if="users.length">
-                            <h4>All Users:</h4>
-                            <ul>
-                                <li v-for="user in users" :key="user.id">
-                                    {{ user.name }} - {{ user.email }}
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+    <v-container>
+        <v-card>
+            <div class="card-header">
+                <h3>Dashboard</h3>
+
+                <p class="mb-0">
+                    You are logged in as <b>{{ user.name }}</b>
+                </p>
+                <div v-if="users.length">
+                    <h4>All Users:</h4>
+                    <ul>
+                        <li v-for="user in users" :key="user.id">
+                            {{ user.name }} - {{ user.email }}
+                        </li>
+                    </ul>
                 </div>
             </div>
-        </div>
-    </div>
+        </v-card>
+</v-container>
 </template>
 
 <script>

@@ -10,6 +10,13 @@ const DahboardLayout = () => import("@/components/layouts/Default.vue");
 /* Authenticated Component */
 const Dashboard = () => import("@/components/Dashboard.vue");
 
+/* Not Found Component */
+const NotFound = () => import("@/components/NotFound.vue");
+
+const AllUsers = () => import("@/components/AllUsers.vue");
+
+const UserDetails = () => import("@/components/UserDetails.vue");
+
 const routes = [
     {
         name: "login",
@@ -34,6 +41,7 @@ const routes = [
         component: DahboardLayout,
         meta: {
             middleware: "auth",
+            title: `Dashboard Layout`,
         },
         children: [
             {
@@ -44,7 +52,30 @@ const routes = [
                     title: `Dashboard`,
                 },
             },
+            {
+                name: "allusers",
+                path: "/all-users",
+                component: AllUsers,
+                meta: {
+                    title: `All Users`,
+                },
+            },
+            {
+                name: "userDetails",
+                path: "user/:id",
+                component: UserDetails,
+                meta: {
+                    title: `User Details`,
+                },
+            },
         ],
+    },
+    {
+        path: "/:catchAll(.*)",
+        component: NotFound,
+        meta: {
+            title: "Page Not Found",
+        },
     },
 ];
 const router = createRouter({

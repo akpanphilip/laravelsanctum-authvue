@@ -1,76 +1,74 @@
 <template>
-    <div class="container h-100">
-        <div class="row h-100 align-items-center">
-            <div class="col-12 col-md-6 offset-md-3">
-                <div class="card shadow sm">
-                    <div class="card-body">
-                        <h1 class="text-center">Login</h1>
-                        <hr />
-                        <form
-                            action="javascript:void(0)"
-                            class="row"
-                            method="post"
-                        >
-                            <div class="form-group col-12">
-                                <label for="email" class="font-weight-bold"
-                                    >Email</label
-                                >
-                                <input
-                                    type="text"
-                                    v-model="auth.email"
-                                    name="email"
-                                    id="email"
-                                    class="form-control"
-                                />
-                            </div>
-                            <div class="form-group col-12">
-                                <label for="password" class="font-weight-bold"
-                                    >Password</label
-                                >
-                                <input
-                                    type="password"
-                                    v-model="auth.password"
-                                    name="password"
-                                    id="password"
-                                    class="form-control"
-                                />
-                            </div>
-                            <div class="col-12 mb-2">
-                                <button
-                                    type="submit"
-                                    :disabled="processing"
-                                    @click="login"
-                                    class="btn btn-primary btn-block"
-                                >
-                                    {{ processing ? "Please wait" : "Login" }}
-                                </button>
-                            </div>
-                            <div class="col-12 text-center">
-                                <label
-                                    >Don't have an account?
-                                    <router-link :to="{ name: 'register' }"
-                                        >Register Now!</router-link
-                                    ></label
-                                >
-                            </div>
-                        </form>
+    <v-container>
+        <v-row class="justify-center" dense>
+            <v-col cols="6">
+                <v-form ref="form">
+                    <div class="text-center mb-2">
+                        <h3 class="auth-header">Welcome Back, Login</h3>
+                        <div class="auth-subheader">
+                            Join other passionate learners explore new things
+                        </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                    <!-- General error message -->
+                    <v-alert v-if="generalError" type="error" dismissible>
+                        {{ generalError }}
+                    </v-alert>
+                    <v-text-field
+                        variant="outlined"
+                        v-model="form.email"
+                        label="Email*"
+                        :error-messages="errors.email"
+                        required
+                    ></v-text-field>
+                    <v-text-field
+                        v-model="form.password"
+                        :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+                        :type="visible ? 'text' : 'password'"
+                        placeholder="Enter your password"
+                        prepend-inner-icon="mdi-lock-outline"
+                        variant="outlined"
+                        @click:append-inner="visible = !visible"
+                        :error-messages="errors.password"
+                    ></v-text-field>
+
+                    <v-row dense>
+                        <v-col cols="12" md="12" sm="12">
+                            <v-btn
+                                @click="login"
+                                rounded="lg"
+                                size="x-large"
+                                class="bg-primary"
+                                block
+                            >
+                                {{ processing ? "Please wait" : "Login" }}
+                            </v-btn>
+                        </v-col>
+                    </v-row>
+                    <div class="text-center mt-2">
+                        <p>
+                            <span>Don't have an account?</span> &nbsp;
+                            <router-link :to="{ name: 'register' }"
+                                >Register Now</router-link
+                            >
+                        </p>
+                    </div>
+                </v-form>
+            </v-col>
+        </v-row>
+    </v-container>
 </template>
+
 <script>
 import { mapActions } from "vuex";
 export default {
     name: "login",
     data() {
         return {
-            auth: {
-                email: "",
-                password: "",
-            },
+            errors: {},
+            form: {},
             processing: false,
+            generalError: "",
+            visible: false,
         };
     },
     methods: {
@@ -79,20 +77,39 @@ export default {
         }),
         async login() {
             this.processing = true;
-            await axios.get("/sanctum/csrf-cookie");
-            await axios
-                .post("/login", this.auth)
-                .then(({ data }) => {
-                    console.log(data);
-                    this.signIn();
-                })
-                .catch(({ response: { data } }) => {
-                    alert(data.message);
-                })
-                .finally(() => {
-                    this.processing = false;
-                });
+            this.clearErrors();
+            try {
+                await axios.get("/sanctum/csrf-cookie");
+                const { data } = await axios.post("/login", this.form);
+                this.signIn();
+                console.log(data);
+            } catch (error) {
+                const { data } = error.response;
+                if (data.errors) {
+                    this.setErrors(data.errors);
+                } else {
+                    this.generalError = data.message || "An error occurred.";
+                }
+            } finally {
+                this.processing = false;
+            }
+        },
+        clearErrors() {
+            this.errors = {
+                email: [],
+                password: [],
+            };
+            this.generalError = "";
+        },
+        setErrors(errors) {
+            Object.keys(errors).forEach((field) => {
+                this.errors[field] = errors[field];
+            });
         },
     },
 };
 </script>
+
+<style>
+
+</style>
