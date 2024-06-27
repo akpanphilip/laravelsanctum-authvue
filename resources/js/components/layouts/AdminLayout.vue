@@ -2,6 +2,7 @@
     <v-card>
         <v-row>
             <v-col cols="9">
+                <h1 class="pa-6">Admin Layout</h1>
                 <router-view></router-view>
             </v-col>
             <v-col cols="3">
@@ -23,32 +24,32 @@
                             <v-list-item
                                 :class="{
                                     'v-list-item--active':
-                                        isActive('dashboard'),
+                                        isActive('adminIndex'),
                                 }"
                                 prepend-icon="mdi-home-city"
                             >
-                                <router-link :to="{ name: 'dashboard' }">
+                                <router-link :to="{ name: 'adminIndex' }">
                                     Dashboard
                                 </router-link>
                             </v-list-item>
                             <v-list-item
-                                prepend-icon="mdi-account"
-                                title="My Account"
-                                value="account"
-                            ></v-list-item>
-                            <v-list-item
-                                prepend-icon="mdi-account-group-outline"
-                                title="Users"
-                                value="users"
-                            ></v-list-item>
-                            <v-list-item
                                 :class="{
-                                    'v-list-item--active': isActive('allusers'),
+                                    'v-list-item--active': isActive('users'),
                                 }"
                                 prepend-icon="mdi-account-group-outline"
                             >
-                                <router-link :to="{ name: 'allusers' }">
-                                    All Users
+                                <router-link :to="{ name: 'users' }">
+                                    Users
+                                </router-link>
+                            </v-list-item>
+                            <v-list-item
+                                :class="{
+                                    'v-list-item--active': isActive('partners'),
+                                }"
+                                prepend-icon="mdi-account-group-outline"
+                            >
+                                <router-link :to="{ name: 'partners' }">
+                                    Partners
                                 </router-link>
                             </v-list-item>
                             <v-list-item

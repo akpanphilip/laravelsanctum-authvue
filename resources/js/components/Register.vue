@@ -16,17 +16,25 @@
                     <v-text-field
                         variant="outlined"
                         v-model="form.name"
-                        label="Name*"
+                        label="Name"
                         :error-messages="errors.name"
                         required
                     ></v-text-field>
                     <v-text-field
                         variant="outlined"
                         v-model="form.email"
-                        label="Email*"
+                        label="Email"
                         :error-messages="errors.email"
                         required
                     ></v-text-field>
+                    <v-select
+                        label="User Type"
+                        v-model="form.userType"
+                        :items="['admin', 'student']"
+                        variant="outlined"
+                        :error-messages="errors.userType"
+                        required
+                    ></v-select>
                     <v-text-field
                         v-model="form.password"
                         :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"

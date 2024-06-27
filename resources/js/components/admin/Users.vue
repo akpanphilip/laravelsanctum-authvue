@@ -94,7 +94,7 @@
 <script>
 import { toast } from "vue3-toastify";
 export default {
-    name: "Dashboard",
+    name: "Users",
     data() {
         return {
             users: [],

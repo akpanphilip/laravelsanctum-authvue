@@ -2,6 +2,7 @@
     <v-card>
         <v-row>
             <v-col cols="9">
+                <h1 class="pa-6">Student Layout</h1>
                 <router-view></router-view>
             </v-col>
             <v-col cols="3">
@@ -23,32 +24,26 @@
                             <v-list-item
                                 :class="{
                                     'v-list-item--active':
-                                        isActive('dashboard'),
+                                        isActive('studentIndex'),
                                 }"
                                 prepend-icon="mdi-home-city"
                             >
-                                <router-link :to="{ name: 'dashboard' }">
+                                <router-link :to="{ name: 'studentIndex' }">
                                     Dashboard
                                 </router-link>
                             </v-list-item>
                             <v-list-item
-                                prepend-icon="mdi-account"
-                                title="My Account"
-                                value="account"
-                            ></v-list-item>
-                            <v-list-item
-                                prepend-icon="mdi-account-group-outline"
-                                title="Users"
-                                value="users"
-                            ></v-list-item>
-                            <v-list-item
                                 :class="{
-                                    'v-list-item--active': isActive('allusers'),
+                                    'v-list-item--active': isActive(
+                                        'studentProfileSetting'
+                                    ),
                                 }"
-                                prepend-icon="mdi-account-group-outline"
+                                prepend-icon="mdi-account"
                             >
-                                <router-link :to="{ name: 'allusers' }">
-                                    All Users
+                                <router-link
+                                    :to="{ name: 'studentProfileSetting' }"
+                                >
+                                    Settings
                                 </router-link>
                             </v-list-item>
                             <v-list-item
