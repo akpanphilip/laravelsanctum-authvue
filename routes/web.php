@@ -8,11 +8,11 @@ use Illuminate\Http\Request;
 
 // Route::get('/', [PageController::class, 'index']);
 
-Route::get('/api/users', [PageController::class, 'users']);
+// Route::get('/api/users', [PageController::class, 'users']);
 
-Route::post('/api/user/create', [PageController::class, 'create']);
+// Route::post('/api/user/create', [PageController::class, 'create']);
 
-Route::get('/api/user/{id}', [PageController::class, 'show']);
+// Route::get('/api/user/{id}', [PageController::class, 'show']);
 
 
 Route::middleware('auth:sanctum')->get('/api/user', function (Request $request) {
@@ -23,4 +23,4 @@ Route::get('/{any?}', function () {
     return view('vue');
 })->where('any', '(.*)');
 
-Auth::routes();
+// Auth::routes();

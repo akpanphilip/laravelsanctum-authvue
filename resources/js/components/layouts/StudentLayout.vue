@@ -52,7 +52,7 @@
                     <router-view></router-view>
                 </v-container>
             </v-main>
-            <v-bottom-navigation class="d-none d-sm-flex d-md-none" grow>
+            <v-bottom-navigation class="d-sm-flex d-md-none" grow>
                 <v-btn value="recent">
                     <v-icon>mdi-history</v-icon>
 

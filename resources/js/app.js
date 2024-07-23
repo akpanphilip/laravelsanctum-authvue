@@ -1,6 +1,6 @@
 import "./bootstrap";
 import Router from "@/router";
-import store from "@/store";
+// import store from "@/store";
 import { createApp } from "vue";
 
 // Vuetify
@@ -23,6 +23,6 @@ const vuetify = createVuetify({
 const app = createApp({});
 app.use(Vue3Toasity, { autoClose: 3000 });
 app.use(Router);
-app.use(store);
+// app.use(store);
 app.use(vuetify);
 app.mount("#app");
